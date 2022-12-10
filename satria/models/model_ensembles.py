@@ -8,12 +8,35 @@ from sklearn.metrics import accuracy_score
 
 
 class EnsembleStacking:
-    def __init__(self, X_train, y_train, X_test, y_test, kfold):
+    def __init__(self,
+                 X_train,
+                 y_train,
+                 X_test,
+                 y_test,
+                 kfold,
+                 svm_params=None,
+                 dt_params=None,
+                 logreg_params=None,
+                 ann_params=None
+                 ):
         self.X_train = X_train
         self.y_train = y_train
         self.X_test = X_test
         self.y_test = y_test
         self.kfold = kfold
+        self.svm_params = None
+        self.dt_params = None
+        self.logreg_params = None
+        self.ann_params = None
+
+        if svm_params != None:
+            self.svm_params = svm_params
+        if dt_params != None:
+            self.dt_params = dt_params
+        if logreg_params != None:
+            self.logreg_params = logreg_params
+        if ann_params != None:
+            self.ann_params = ann_params
 
     def train_ensemble(self):
         ensemble_classifiers = {
@@ -30,7 +53,15 @@ class EnsembleStacking:
             y_latih, y_validasi = self.y_train[train_index], self.y_train[val_index]
 
             # train 5 model of SVM
-            svm = SVC()
+            if self.svm_params is None:
+                svm = SVC()
+            else:
+                svm = SVC(
+                    C=self.svm_params['C'],
+                    kernel=self.svm_params['kernel'],
+                    gamma=self.svm_params['gamma'],
+                    tol=self.svm_params['tol'],
+                )
             svm.fit(X_latih, y_latih)
             predicted_svm = svm.predict(X_validasi)
             tested_svm = svm.predict(self.X_test)
@@ -56,7 +87,16 @@ class EnsembleStacking:
             }
 
             # train 5 model of Decision Tree
-            decision_tree = DecisionTreeClassifier()
+            if self.dt_params is None:
+                decision_tree = DecisionTreeClassifier()
+            else:
+                decision_tree = DecisionTreeClassifier(
+                    criterion=self.dt_params['criterion'],
+                    splitter=self.dt_params['splitter'],
+                    max_depth=self.dt_params['max_depth'],
+                    min_samples_split=self.dt_params['min_samples_split'],
+                    min_samples_leaf=self.dt_params['min_samples_leaf'],
+                )
             decision_tree.fit(X_latih, y_latih)
             predicted_decision_tree = decision_tree.predict(X_validasi)
             tested_decision_tree = decision_tree.predict(self.X_test)
@@ -70,7 +110,13 @@ class EnsembleStacking:
             }
 
             # train 5 model of logReg
-            log_reg = LogisticRegression(solver='newton-cg')
+            if self.logreg_params is None:
+                log_reg = LogisticRegression()
+            else:
+                log_reg = LogisticRegression(
+                    penalty=self.logreg_params['penalty'],
+                    solver=self.logreg_params['solver'], max_iter=self.logreg_params['max_iter'], tol=self.logreg_params['tol'],
+                )
             log_reg.fit(X_latih, y_latih)
             predicted_log_reg = log_reg.predict(X_validasi)
             tested_log_reg = log_reg.predict(self.X_test)
