@@ -43,7 +43,13 @@ class GeneticAlgorithm:
                     1: 1.1,
                     2: 1.2,
                     3: 1.3,
-                    4: 1.4
+                    4: 1.4,
+                    5: 1.5,
+                    6: 1.6,
+                    7: 1.7,
+                    8: 1.8,
+                    9: 2.0,
+                    10: 2.1
                 },
                 'kernel': {
                     1: 'linear',
@@ -91,6 +97,7 @@ class GeneticAlgorithm:
                     1: 1,
                     2: 2,
                     3: 3,
+                    4: 4,
                 },
             },
             'LogReg': {
@@ -107,10 +114,10 @@ class GeneticAlgorithm:
                     5: 'saga',
                 },
                 'max_iter': {
-                    1: 10,
-                    2: 20,
-                    3: 30,
-                    4: 40,
+                    1: 50,
+                    2: 75,
+                    3: 100,
+                    4: 125,
                 },
                 'tol': {
                     1: 0.001,
@@ -120,12 +127,26 @@ class GeneticAlgorithm:
             },
             'ANN': {
                 'hidden_layer_sizes': {
-                    1: (50),
-                    2: (100),
-                    3: (50, 50),
-                    4: (50, 100),
-                    5: (100, 50),
-                    6: (100, 100),
+                    1: (25),
+                    2: (50),
+                    3: (75),
+                    4: (100),
+                    5: (25, 25),
+                    6: (25, 50),
+                    7: (25, 75),
+                    8: (25, 100),
+                    9: (50, 25),
+                    10: (50, 50),
+                    11: (50, 75),
+                    12: (50, 100),
+                    13: (75, 25),
+                    14: (75, 50),
+                    15: (75, 75),
+                    16: (75, 100),
+                    17: (100, 25),
+                    18: (100, 50),
+                    19: (100, 75),
+                    20: (100, 100),
                 },
                 'activation': {
                     1: 'identity',
@@ -159,6 +180,13 @@ class GeneticAlgorithm:
                     3: 0.003,
                     4: 0.004,
                     5: 0.005
+                },
+                'max_iter': {
+                    1: 100,
+                    2: 200,
+                    3: 250,
+                    4: 300,
+                    5: 350,
                 }
             }
         }
@@ -299,16 +327,16 @@ class GeneticAlgorithm:
                 perpotongan_gen_svm:len(kromosom_induk_2[0])
             ]
             # dt
-            kromosom_anak_1[1][perpotongan_gen_svm:len(kromosom_anak_1[1])] = kromosom_induk_2[1][
-                perpotongan_gen_svm:len(kromosom_induk_2[1])
+            kromosom_anak_1[1][perpotongan_gen_dt:len(kromosom_anak_1[1])] = kromosom_induk_2[1][
+                perpotongan_gen_dt:len(kromosom_induk_2[1])
             ]
             # logreg
-            kromosom_anak_1[2][perpotongan_gen_svm:len(kromosom_anak_1[2])] = kromosom_induk_2[2][
-                perpotongan_gen_svm:len(kromosom_induk_2[2])
+            kromosom_anak_1[2][perpotongan_gen_logreg:len(kromosom_anak_1[2])] = kromosom_induk_2[2][
+                perpotongan_gen_logreg:len(kromosom_induk_2[2])
             ]
             # ann
-            kromosom_anak_1[3][perpotongan_gen_svm:len(kromosom_anak_1[3])] = kromosom_induk_2[3][
-                perpotongan_gen_svm:len(kromosom_induk_2[3])
+            kromosom_anak_1[3][perpotongan_gen_ann:len(kromosom_anak_1[3])] = kromosom_induk_2[3][
+                perpotongan_gen_ann:len(kromosom_induk_2[3])
             ]
 
             # append gen pada induk 1 ke sisa gen anak 2
@@ -317,16 +345,16 @@ class GeneticAlgorithm:
                 perpotongan_gen_svm:len(kromosom_induk_1[0])
             ]
             # dt
-            kromosom_anak_2[1][perpotongan_gen_svm:len(kromosom_anak_2[1])] = kromosom_induk_1[1][
-                perpotongan_gen_svm:len(kromosom_induk_1[1])
+            kromosom_anak_2[1][perpotongan_gen_dt:len(kromosom_anak_2[1])] = kromosom_induk_1[1][
+                perpotongan_gen_dt:len(kromosom_induk_1[1])
             ]
             # logreg
-            kromosom_anak_2[2][perpotongan_gen_svm:len(kromosom_anak_2[2])] = kromosom_induk_1[2][
-                perpotongan_gen_svm:len(kromosom_induk_1[2])
+            kromosom_anak_2[2][perpotongan_gen_logreg:len(kromosom_anak_2[2])] = kromosom_induk_1[2][
+                perpotongan_gen_logreg:len(kromosom_induk_1[2])
             ]
             # ann
-            kromosom_anak_2[3][perpotongan_gen_svm:len(kromosom_anak_2[3])] = kromosom_induk_1[3][
-                perpotongan_gen_svm:len(kromosom_induk_1[3])
+            kromosom_anak_2[3][perpotongan_gen_ann:len(kromosom_anak_2[3])] = kromosom_induk_1[3][
+                perpotongan_gen_ann:len(kromosom_induk_1[3])
             ]
 
             # check kesesuaian hasil crossover di setiap gen
@@ -508,10 +536,11 @@ class GeneticAlgorithm:
                 batch_size=ann_hyperparams[4],
                 learning_rate=ann_hyperparams[5],
                 learning_rate_init=ann_hyperparams[6],
+                max_iter=ann_hyperparams[7]
             )
             ann_model.fit(new_X_train, new_y_train)
             predicted_ann_val = ann_model.predict(new_X_val)
-            accuracy_ann_val = accuracy_score(y_val, predicted_ann_val)
+            accuracy_ann_val = accuracy_score(new_y_val, predicted_ann_val)
 
             # calculate fitness value
             fitness_value_model = (
